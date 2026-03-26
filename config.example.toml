@@ -19,6 +19,7 @@ model = "speech-2.8-hd"
 #   - male-qn-qingse: 男声 - 青涩
 #   - male-qn-jingying: 男声 - 精英
 #   - male-qn-badao: 男声 - 霸道
+# 克隆音色: 使用你上传音频后获得的 voice_id，如 neo_cian2
 voice_id = "female-tianmei"
 
 # 语速（可选）
@@ -48,3 +49,9 @@ auto_delete = false
 # true: 以语音消息形式发送
 # false: 以文件形式发送
 send_as_record = true
+
+[plugin]
+# 是否注入系统提示词（可选）
+# true: 告知 LLM 使用语音功能，LLM 会在合适时机主动调用
+# false: 不注入，需要用户明确要求才会使用
+inject_system_prompt = true

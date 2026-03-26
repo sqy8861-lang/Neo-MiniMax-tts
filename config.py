@@ -26,14 +26,9 @@ class NeoMiniMaxTTSConfig(BaseConfig):
             description="MiniMax API Key（必填）",
         )
 
-        group_id: str = Field(
-            default="",
-            description="MiniMax Group ID（可选）",
-        )
-
         model: str = Field(
-            default="speech-02-turbo",
-            description="TTS 模型名称（speech-01, speech-01-turbo, speech-02-turbo）",
+            default="speech-2.8-hd",
+            description="TTS 模型名称（speech-2.8-hd, speech-2.8-turbo）",
         )
 
         voice_id: str = Field(
@@ -84,6 +79,16 @@ class NeoMiniMaxTTSConfig(BaseConfig):
             description="是否以语音消息形式发送（false 则发送文件）",
         )
 
+    @config_section("plugin")
+    class PluginSection(SectionBase):
+        """插件行为配置。"""
+
+        inject_system_prompt: bool = Field(
+            default=True,
+            description="是否注入系统提示词（告知 LLM 使用语音功能）",
+        )
+
     minimax: MiniMaxSection = Field(default_factory=MiniMaxSection)
     output: OutputSection = Field(default_factory=OutputSection)
     behavior: BehaviorSection = Field(default_factory=BehaviorSection)
+    plugin: PluginSection = Field(default_factory=PluginSection)
