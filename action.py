@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Annotated, cast
 
-from src.app.plugin_system.api.send_api import send_audio, send_file
+from src.app.plugin_system.api.send_api import send_voice, send_file
 from src.core.components.base.action import BaseAction
 
 from .service import NeoMiniMaxTTSService
@@ -40,34 +40,47 @@ class NeoMiniMaxTTSAction(BaseAction):
         service = cast(NeoMiniMaxTTSService, service)
 
         cfg = service._cfg()
-        ok, result, audio_path = await service.text_to_speech(
-            text, save_to_file=True, voice_id=voice_id
-        )
 
-        if not ok:
-            return False, result
-
-        if not audio_path:
-            return False, "音频文件生成失败"
-
-        try:
-            if cfg.behavior.send_as_record:
-                await send_audio(
+        if cfg.behavior.send_as_record:
+            ok, result, voice_data = await service.text_to_speech_base64(text, voice_id=voice_id)
+            
+            if not ok:
+                return False, result
+            
+            if not voice_data:
+                return False, "语音数据生成失败"
+            
+            try:
+                await send_voice(
+                    voice_data=voice_data,
                     stream_id=self.chat_stream.stream_id,
                     platform=self.chat_stream.platform,
-                    audio_path=audio_path,
                 )
-            else:
+                return True, f"已发送语音消息: {result}"
+            except Exception as e:
+                return False, f"发送语音消息失败: {str(e)}"
+        else:
+            ok, result, audio_path = await service.text_to_speech(
+                text, save_to_file=True, voice_id=voice_id
+            )
+
+            if not ok:
+                return False, result
+
+            if not audio_path:
+                return False, "音频文件生成失败"
+
+            try:
                 await send_file(
+                    file_path=audio_path,
                     stream_id=self.chat_stream.stream_id,
                     platform=self.chat_stream.platform,
-                    file_path=audio_path,
                 )
 
-            if cfg.behavior.auto_delete:
-                service.cleanup_audio_file(audio_path)
+                if cfg.behavior.auto_delete:
+                    service.cleanup_audio_file(audio_path)
 
-            return True, f"已发送语音消息: {result}"
+                return True, f"已发送语音文件: {result}"
 
-        except Exception as e:
-            return False, f"发送语音消息失败: {str(e)}"
+            except Exception as e:
+                return False, f"发送语音文件失败: {str(e)}"
