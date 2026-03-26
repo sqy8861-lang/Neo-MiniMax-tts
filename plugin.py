@@ -43,10 +43,6 @@ class NeoMiniMaxTTSPlugin(BasePlugin):
                 logger.warning(
                     "MiniMax API Key 未配置，请在 config/plugins/neo_minimax_tts/config.toml 中设置 minimax.api_key"
                 )
-            if not cfg.minimax.group_id:
-                logger.warning(
-                    "MiniMax Group ID 未配置，请在 config/plugins/neo_minimax_tts/config.toml 中设置 minimax.group_id"
-                )
 
     async def on_plugin_unloaded(self) -> None:
         """插件卸载前：清理资源。"""

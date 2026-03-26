@@ -79,9 +79,7 @@ class NeoMiniMaxTTSService(BaseService):
         if not cfg.minimax.api_key:
             raise RuntimeError("MiniMax API Key 未配置，请在配置文件中设置 minimax.api_key")
 
-        # group_id 是可选的
-
-        url = "https://api.minimax.chat/v1/text_to_speech"
+        url = "https://api.minimax.io/v1/t2a_v2"
 
         headers = {
             "Authorization": f"Bearer {cfg.minimax.api_key}",
@@ -89,13 +87,27 @@ class NeoMiniMaxTTSService(BaseService):
         }
 
         use_voice_id = voice_id if voice_id else cfg.minimax.voice_id
+        audio_format = self._get_audio_format()
 
         payload = {
             "model": cfg.minimax.model,
             "text": text,
-            "voice_id": use_voice_id,
-            "speed": cfg.minimax.speed,
-            "volume": cfg.minimax.volume,
+            "stream": False,
+            "voice_setting": {
+                "voice_id": use_voice_id,
+                "speed": cfg.minimax.speed,
+                "vol": cfg.minimax.volume,
+                "pitch": 0,
+            },
+            "audio_setting": {
+                "sample_rate": 32000,
+                "bitrate": 128000,
+                "format": audio_format,
+                "channel": 1,
+            },
+            "language_boost": "auto",
+            "output_format": "hex",
+            "subtitle_enable": False,
         }
 
         logger.debug(f"调用 MiniMax TTS API: 文本长度={len(text)}, 模型={cfg.minimax.model}")
@@ -109,12 +121,18 @@ class NeoMiniMaxTTSService(BaseService):
                             f"MiniMax TTS API 调用失败 (状态码 {response.status}): {error_text}"
                         )
 
-                    content_type = response.headers.get("Content-Type", "")
-                    if "audio" not in content_type and "application/json" in content_type:
-                        error_data = await response.json()
-                        raise RuntimeError(f"MiniMax TTS API 返回错误: {error_data}")
-
-                    audio_data = await response.read()
+                    result = await response.json()
+                    
+                    if "base_resp" in result and result["base_resp"].get("status_code") != 0:
+                        error_msg = result["base_resp"].get("status_msg", "未知错误")
+                        raise RuntimeError(f"MiniMax TTS API 返回错误: {error_msg}")
+                    
+                    if "data" not in result or "audio" not in result["data"]:
+                        raise RuntimeError(f"MiniMax TTS API 返回数据格式错误: {result}")
+                    
+                    audio_hex = result["data"]["audio"]
+                    audio_data = bytes.fromhex(audio_hex)
+                    
                     logger.info(f"MiniMax TTS 调用成功: 音频大小={len(audio_data)} 字节")
                     return audio_data
 
