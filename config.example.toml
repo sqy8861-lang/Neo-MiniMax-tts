@@ -1,0 +1,54 @@
+# Neo-MiniMax-TTS 插件配置模板
+# 复制此文件到 config/plugins/neo_minimax_tts/config.toml 并填入你的配置
+
+[minimax]
+# MiniMax API Key（必填）
+# 从 https://platform.minimaxi.com/ 获取
+api_key = ""
+
+# MiniMax Group ID（可选）
+# 从 https://platform.minimaxi.com/ 获取
+group_id = ""
+
+# TTS 模型名称（可选）
+# 可选值: speech-01, speech-01-turbo, speech-02-turbo
+model = "speech-02-turbo"
+
+# 默认语音 ID（可选）
+# 支持 MiniMax 预设音色或声音克隆后的音色
+# 预设音色:
+#   - female-tianmei: 女声 - 甜美
+#   - female-yujie: 女声 - 御姐
+#   - female-chengshu: 女声 - 成熟
+#   - male-qn-qingse: 男声 - 青涩
+#   - male-qn-jingying: 男声 - 精英
+#   - male-qn-badao: 男声 - 霸道
+voice_id = "female-tianmei"
+
+# 语速（可选）
+# 范围: 0.5 - 2.0，1.0 为正常语速
+speed = 1.0
+
+# 音量（可选）
+# 范围: 0.1 - 1.0，1.0 为正常音量
+volume = 1.0
+
+[output]
+# 音频文件保存目录（可选）
+audio_dir = "data/neo_minimax_tts/audio"
+
+# 音频格式（可选）
+# 可选值: mp3, wav, aac
+audio_format = "mp3"
+
+# 单次转换最大文本长度（可选）
+max_text_length = 500
+
+[behavior]
+# 发送后是否自动删除本地音频文件（可选）
+auto_delete = false
+
+# 是否以语音消息形式发送（可选）
+# true: 以语音消息形式发送
+# false: 以文件形式发送
+send_as_record = true

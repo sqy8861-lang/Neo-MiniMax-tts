@@ -1,0 +1,28 @@
+{
+  "name": "neo_minimax_tts",
+  "version": "1.0.0",
+  "description": "Neo-MiniMax-TTS — 基于 MiniMax 的文本转语音插件，支持声音克隆、手动触发语音消息发送，提供多种语音风格和参数配置。",
+  "author": "MoFox Team",
+  "dependencies": {
+    "plugins": [],
+    "components": []
+  },
+  "include": [
+    {
+      "component_type": "service",
+      "component_name": "neo_minimax_tts",
+      "dependencies": [],
+      "enabled": true
+    },
+    {
+      "component_type": "action",
+      "component_name": "neo_minimax_tts",
+      "dependencies": [],
+      "enabled": true
+    }
+  ],
+  "entry_point": "plugin.py",
+  "min_core_version": "1.0.0",
+  "python_dependencies": ["aiohttp"],
+  "dependencies_required": true
+}
