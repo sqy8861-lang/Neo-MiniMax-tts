@@ -31,11 +31,8 @@
 # MiniMax API Key（必填）
 api_key = "your-minimax-api-key"
 
-# MiniMax Group ID（可选）
-group_id = "your-minimax-group-id"
-
-# TTS 模型名称（可选，默认 speech-02-turbo）
-model = "speech-02-turbo"
+# TTS 模型名称（可选，默认 speech-2.8-hd）
+model = "speech-2.8-hd"
 
 # 默认语音 ID（可选，默认 female-tianmei）
 # 支持声音克隆后的 voice_id
@@ -69,7 +66,7 @@ send_as_record = true
 
 1. 访问 [MiniMax 开放平台](https://platform.minimaxi.com/)
 2. 注册/登录账号
-3. 在控制台中获取 API Key 和 Group ID
+3. 在控制台中获取 API Key
 
 ## 声音克隆
 
@@ -116,7 +113,6 @@ python checkcode\test_tts.py
 
 按照提示输入：
 - MiniMax API Key
-- MiniMax Group ID
 - Voice ID（可选）
 - 测试文本（可选）
 
@@ -163,7 +159,7 @@ MiniMax 提供以下预设音色：
 
 ### API 调用失败
 
-- 检查 API Key 和 Group ID 是否正确
+- 检查 API Key 是否正确
 - 确认账户有足够的余额
 - 查看日志中的详细错误信息
 
